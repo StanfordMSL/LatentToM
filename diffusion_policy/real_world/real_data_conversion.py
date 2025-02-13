@@ -62,7 +62,7 @@ def real_data_to_replay_buffer(
     in_video_dir = input.joinpath('videos')
     assert in_zarr_path.is_dir()
     assert in_video_dir.is_dir()
-    
+
     in_replay_buffer = ReplayBuffer.create_from_path(str(in_zarr_path.absolute()), mode='r')
 
     # save lowdim data to single chunk

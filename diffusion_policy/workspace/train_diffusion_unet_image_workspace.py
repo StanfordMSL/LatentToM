@@ -163,6 +163,14 @@ class TrainDiffusionUnetImageWorkspace(BaseWorkspace):
                 with tqdm.tqdm(train_dataloader, desc=f"Training epoch {self.epoch}",
                         leave=False, mininterval=cfg.training.tqdm_interval_sec) as tepoch:
                     for batch_idx, batch in enumerate(tepoch):
+                        # # print batch's data structure
+                        # for key, value in batch.items():
+                        #     print(f"Key: {key}")
+                        #     if isinstance(value, dict):
+                        #         for sub_key, sub_value in value.items():
+                        #             print(f"  Sub-key: {sub_key}, Shape: {sub_value.shape}")
+                        #     else:
+                        #         print(f"  Shape: {value.shape}")
                         """
                         batch = {
                         obs: {
