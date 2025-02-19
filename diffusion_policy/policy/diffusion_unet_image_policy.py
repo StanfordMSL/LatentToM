@@ -190,19 +190,35 @@ class DiffusionUnetImagePolicy(BaseImagePolicy):
         self.normalizer.load_state_dict(normalizer.state_dict())
 
     def compute_loss(self, batch):
+        """
+        The structure of batch is:
+        Key: obs
+            Sub-key: camera_1, Shape: torch.Size([16, 2, 3, 240, 320])
+            Sub-key: camera_3, Shape: torch.Size([16, 2, 3, 240, 320])
+            Sub-key: robot_eef_pose, Shape: torch.Size([16, 2, 2])
+        Key: action
+            Shape: torch.Size([16, 32, 2])
+        """
         # normalize input
         assert 'valid_mask' not in batch
-        nobs = self.normalizer.normalize(batch['obs'])
-        nactions = self.normalizer['action'].normalize(batch['action'])
+        nobs = self.normalizer.normalize(batch['obs'])                    # after normalization, the size of obs is same [B, 2, 3, 240, 320] / [16, 2, 2]
+        nactions = self.normalizer['action'].normalize(batch['action'])   # [B, horizon, 2]
         batch_size = nactions.shape[0]
         horizon = nactions.shape[1]
+
+        # # check the size of the normalized obs and actions
+        # for key, value in nobs.items():
+        #     try:
+        #         print(f"Key: {key}, Shape: {value.shape}")
+        #     except AttributeError:
+        #         print(f"Key: {key}, Type: {type(value)} (No shape attribute)")
 
         # handle different ways of passing observation
         local_cond = None
         global_cond = None
         trajectory = nactions
         cond_data = trajectory
-        if self.obs_as_global_cond:
+        if self.obs_as_global_cond:   # in our case, self.obs_as_global_cond is True
             # reshape B, T, ... to B*T
             this_nobs = dict_apply(nobs, 
                 lambda x: x[:,:self.n_obs_steps,...].reshape(-1,*x.shape[2:]))
