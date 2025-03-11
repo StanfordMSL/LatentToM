@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  - task: xarm_pusht_image
+  - task: xarm1_multi_particle_decentralized
 
 name: train_diffusion_unet_image
 _target_: diffusion_policy.workspace.train_diffusion_unet_image_workspace.TrainDiffusionUnetImageWorkspace
@@ -9,9 +9,9 @@ task_name: ${task.name}
 shape_meta: ${task.shape_meta}
 exp_name: "default"
 
-horizon: 200
+horizon: 100
 n_obs_steps: 2
-n_action_steps: 100
+n_action_steps: 50
 n_latency_steps: 0
 dataset_obs_steps: ${n_obs_steps}
 past_action_visible: False
@@ -74,7 +74,7 @@ ema:
   max_value: 0.9999
 
 dataloader:
-  batch_size: 16    # is this too big?
+  batch_size: 64
   num_workers: 8
   shuffle: True
   pin_memory: True
@@ -102,7 +102,7 @@ training:
   # optimization
   lr_scheduler: cosine
   lr_warmup_steps: 500
-  num_epochs: 600
+  num_epochs: 3000
   gradient_accumulate_every: 1
   # EMA destroys performance when used with BatchNorm
   # replace BatchNorm with GroupNorm.
@@ -111,7 +111,7 @@ training:
   # training loop control
   # in epochs
   rollout_every: 50
-  checkpoint_every: 50
+  checkpoint_every: 100
   val_every: 1
   sample_every: 5
   # steps per epoch

@@ -172,6 +172,7 @@ class TrainDiffusionUnetImageWorkspace(BaseWorkspace):
                         #     else:
                         #         print(f"  Shape: {value.shape}")
                         """
+                        For the pushT task:
                         batch = {
                         obs: {
                             camera1: B, To, C, H, W
@@ -185,6 +186,32 @@ class TrainDiffusionUnetImageWorkspace(BaseWorkspace):
                         To: n_obs_steps
                         T: horizon
                         Da: action dim (should also be 2 here)
+                        ---------------------------------------------
+                        For the pickcup task:
+                        batch = {
+                        obs: {
+                            camera1: B, To, C, H, W
+                            camera3: B, To, C, H, W
+                            robot_eef_pos: B, To, 3
+                            robot_eef_quat: B, To, 4
+                            robot_gripper_qpos: B, To, 2
+                        }
+                        action: {B, T, 10}
+                        }
+                        ---------------------------------------------
+                        For the multi-arm task:
+                        batch = {
+                        obs: {
+                            camera1: B, To, C, H, W
+                            camera3: B, To, C, H, W
+                            camera4: B, To, C, H, W
+                            arm1_robot_eef_pos: B, To, 3
+                            arm1_eef_quat: B, To, 4
+                            arm2_robot_eef_pos: B, To, 3
+                            arm2_eef_quat: B, To, 4
+                            }
+                        action: {B, T, 20}
+                        }
                         """
                         # device transfer
                         batch = dict_apply(batch, lambda x: x.to(device, non_blocking=True))

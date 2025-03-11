@@ -193,11 +193,15 @@ class DiffusionUnetImagePolicy(BaseImagePolicy):
         """
         The structure of batch is:
         Key: obs
-            Sub-key: camera_1, Shape: torch.Size([16, 2, 3, 240, 320])
-            Sub-key: camera_3, Shape: torch.Size([16, 2, 3, 240, 320])
-            Sub-key: robot_eef_pose, Shape: torch.Size([16, 2, 2])
+          Sub-key: camera_1, Shape: torch.Size([64, 2, 3, 240, 320])
+          Sub-key: camera_3, Shape: torch.Size([64, 2, 3, 240, 320])
+          Sub-key: camera_4, Shape: torch.Size([64, 2, 3, 240, 320])
+          Sub-key: arm1_robot_eef_pos, Shape: torch.Size([64, 2, 3])
+          Sub-key: arm1_eef_quat, Shape: torch.Size([64, 2, 4])
+          Sub-key: arm2_robot_eef_pos, Shape: torch.Size([64, 2, 3])
+          Sub-key: arm2_eef_quat, Shape: torch.Size([64, 2, 4])
         Key: action
-            Shape: torch.Size([16, 32, 2])
+          Shape: torch.Size([64, 100, 20])
         """
         # normalize input
         assert 'valid_mask' not in batch

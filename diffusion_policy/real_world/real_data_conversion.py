@@ -76,7 +76,7 @@ def real_data_to_replay_buffer(
     out_replay_buffer = ReplayBuffer.copy_from_store(
         src_store=in_replay_buffer.root.store,
         store=out_store,
-        keys=lowdim_keys,              # lowdim_keys - ['robot_eef_pose', 'action']
+        keys=lowdim_keys,
         chunks=chunks_map,
         compressors=compressor_map
         )
@@ -95,9 +95,9 @@ def real_data_to_replay_buffer(
     n_cameras = 0
     camera_idxs = set() 
     if image_keys is not None:
-        # image_keys: ['camera_1', 'camera_3']
+        # image_keys: ['camera_1', 'camera_3', 'camera_4']
         n_cameras = len(image_keys)
-        camera_idxs = set(int(x.split('_')[-1]) for x in image_keys)  # camera_idxs: {1, 3}
+        camera_idxs = set(int(x.split('_')[-1]) for x in image_keys)  # camera_idxs: {1, 3, 4}
     else:
         # estimate number of cameras
         episode_video_dir = in_video_dir.joinpath(str(0))

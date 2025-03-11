@@ -157,6 +157,32 @@ class TrainDiffusionUnetHybridWorkspace(BaseWorkspace):
                 with tqdm.tqdm(train_dataloader, desc=f"Training epoch {self.epoch}", 
                         leave=False, mininterval=cfg.training.tqdm_interval_sec) as tepoch:
                     for batch_idx, batch in enumerate(tepoch):
+                        # # print batch's data structure
+                        # for key, value in batch.items():
+                        #     print(f"Key: {key}")
+                        #     if isinstance(value, dict):
+                        #         for sub_key, sub_value in value.items():
+                        #             print(f"  Sub-key: {sub_key}, Shape: {sub_value.shape}")
+                        #     else:
+                        #         print(f"  Shape: {value.shape}")
+                        #         print(value[0,0, :])
+                        """
+                        batch = {
+                        obs: {
+                            robot0_eye_in_hand_image,: B, To, C, H, W
+                            sideview_image,: B, To, C, H, W
+                            robot_eef_pos: B, To, 3
+                            robot_eef_quat: B, To, 4
+                            robot_gripper_qpos: B, To, 2
+                        }
+                        action: {B, T, Da}
+                        }
+                        
+                        B: batch size
+                        To: n_obs_steps
+                        T: horizon
+                        Da: action dim (should also be 10 here)
+                        """
                         # device transfer
                         batch = dict_apply(batch, lambda x: x.to(device, non_blocking=True))
                         if train_sampling_batch is None:

@@ -22,7 +22,7 @@
 import zarr
 
 # Load replay_buffer.zarr
-dataset_path = "/home/cheng/Chengyang/diffusion_policy/diffusion_policy_simplePushT/data/xarm_real/xarm_pusht_20250212/replay_buffer.zarr"
+dataset_path = "/home/admin/Chengyang/diffusion_policy/diffusion_policy_pickcup/data/xarm_multi/xarm_push_particle/replay_buffer.zarr"
 replay_buffer = zarr.open(dataset_path, mode='r')
 
 # Print available datasets
@@ -54,33 +54,24 @@ print("-" * 40)
 print(replay_buffer['data/action'].chunks)
 #
 
-
+#
 # import os
+# import zarr
+# from diffusion_policy.common.replay_buffer import ReplayBuffer
 #
-# dataset_path = "/home/cheng/Chengyang/diffusion_policy/diffusion_policy_simplePushT/data/xarm_real/xarm_pusht_20250211"
-# expected_dirs = ["replay_buffer.zarr", "videos"]
-# expected_files = ["replay_buffer.zarr/data/action", "replay_buffer.zarr/data/robot_eef_pose", "replay_buffer.zarr/data/timestamp"]
+# dataset_path = "/home/admin/Chengyang/diffusion_policy/diffusion_policy_pickcup/data/xarm_real/xarm_pickcup_20250224/replay_buffer.zarr"
+# assert os.path.exists(dataset_path), f"❌ Dataset path {dataset_path} does not exist!"
 #
-# # Check if dataset path exists
-# if not os.path.exists(dataset_path):
-#     print(f"❌ Dataset path {dataset_path} is missing!")
-# else:
-#     print(f"✅ Dataset path {dataset_path} exists.")
+# in_replay_buffer = zarr.open(dataset_path, mode='r')
+# print("✅ Replay buffer loaded!")
+# print(in_replay_buffer.tree())  # Ensure the dataset is properly structured
 #
-# # Check required directories
-# for d in expected_dirs:
-#     full_path = os.path.join(dataset_path, d)
-#     if not os.path.exists(full_path):
-#         print(f"❌ Missing directory: {full_path}")
-#     else:
-#         print(f"✅ Found: {full_path}")
-#
-# # Check required files
-# for f in expected_files:
-#     full_path = os.path.join(dataset_path, f)
-#     if not os.path.exists(full_path):
-#         print(f"❌ Missing file: {full_path}")
-#     else:
-#         print(f"✅ Found: {full_path}")
+# out_store = zarr.MemoryStore()
+# out_replay_buffer = ReplayBuffer.copy_from_store(
+#     src_store=in_replay_buffer.store,
+#     store=out_store,
+#     keys=['action', 'robot_eef_pos', 'robot_eef_quat', 'robot_gripper_qpos', 'timestamp'],  # Ensure these keys exist
+# )
+
 
 

@@ -1,4 +1,4 @@
-name: xarm_image
+name: xarm_pusht_image
 
 image_shape: [3, 240, 320]
 dataset_path: data/xarm_real/xarm_pusht_20250212
