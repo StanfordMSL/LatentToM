@@ -50,7 +50,9 @@ class LowdimMaskGenerator(ModuleAttrMixin):
         action_visible=False
         ):
         super().__init__()
-        self.action_dim = action_dim
+        # in our decentralized sheaf version, we modify the following line
+        # self.action_dim = action_dim -> self.action_dim = 10
+        self.action_dim = 10
         self.obs_dim = obs_dim
         self.max_n_obs_steps = max_n_obs_steps
         self.fix_obs_steps = fix_obs_steps

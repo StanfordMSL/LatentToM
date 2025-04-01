@@ -17,7 +17,7 @@ from diffusion_policy.model.common.normalizer import LinearNormalizer, SingleFie
 from diffusion_policy.common.replay_buffer import ReplayBuffer
 from diffusion_policy.common.sampler import (
     SequenceSampler, get_val_mask, downsample_mask)
-from diffusion_policy.real_world.real_data_conversion import real_data_to_replay_buffer
+from diffusion_policy.real_world.real_data_conversion_decentralized import real_data_to_replay_buffer_decentralized
 from diffusion_policy.common.normalize_util import (
     get_range_normalizer_from_stat,
     get_image_range_normalizer,
@@ -26,7 +26,7 @@ from diffusion_policy.common.normalize_util import (
 )
 
 
-class XarmMultiImageDataset(BaseImageDataset):
+class Xarm2MultiImageDecentralizedDataset(BaseImageDataset):
     def __init__(self,
             shape_meta: dict,
             dataset_path: str,
@@ -90,7 +90,7 @@ class XarmMultiImageDataset(BaseImageDataset):
             # replace action as relative to previous frame
             actions = replay_buffer['action'][:]
             # now in our setting, we set the action dim as 10, pos (3) + ori (6) + gripper (1)
-            assert actions.shape[1] == 20
+            assert actions.shape[1] == 10
             actions_diff = np.zeros_like(actions)
             episode_ends = replay_buffer.episode_ends[:]
             for i in range(len(episode_ends)):
@@ -250,10 +250,9 @@ def _get_replay_buffer(dataset_path, shape_meta, store):
             # if 'pose' in key:
             #     assert tuple(shape) in [(2,),(6,)]
 
-    # the current action have 8-dim
+    # the current action have
     action_shape = tuple(shape_meta['action']['shape'])
-    # print("The action shape is: ", action_shape)
-    assert action_shape == (20,)
+    assert action_shape == (10,)
 
     # load data
     cv2.setNumThreads(1)
@@ -264,11 +263,11 @@ def _get_replay_buffer(dataset_path, shape_meta, store):
         # print("In data set， the rgb_keys is: ", rgb_keys)
         """
         dataset_path: data/xarm_multi/xarm_push_particle
-        out_resolutions: {'camera_1': (320, 240), 'camera_3': (320, 240), 'camera_4': (320, 240)}
-        lowdim_shapes: ['arm1_robot_eef_pos', 'arm1_eef_quat', 'arm2_robot_eef_pos', 'arm2_eef_quat']
-        rgb_keys: ['camera_1', 'camera_3', 'camera_4']
+        out_resolutions: {'camera_3': (320, 240), 'camera_4': (320, 240)}
+        lowdim_shapes: ['arm2_robot_eef_pos', 'arm2_eef_quat']
+        rgb_keys: ['camera_3', 'camera_4']
         """
-        replay_buffer = real_data_to_replay_buffer(
+        replay_buffer = real_data_to_replay_buffer_decentralized(
             dataset_path=dataset_path,
             out_store=store,
             out_resolutions=out_resolutions,
@@ -277,20 +276,17 @@ def _get_replay_buffer(dataset_path, shape_meta, store):
         )
 
     # Due we do not need to cut the action and pose
-    # # transform lowdim dimensions
-    # if action_shape == (2,):
-    #     # 2D action space, only controls X and Y
+    # transform lowdim dimensions
+    # if action_shape == (10,):
+    #     # we only want the first 10 dimensions of the action
     #     zarr_arr = replay_buffer['action']
-    #     zarr_resize_index_last_dim(zarr_arr, idxs=[0,1])
+    #     zarr_resize_index_last_dim(zarr_arr, idxs=[0,1,2,3,4,5,6,7,8,9])
     #
     # for key, shape in lowdim_shapes.items():
     #     if 'pose' in key and shape == (2,):
     #         # only take X and Y
     #         zarr_arr = replay_buffer[key]
     #         zarr_resize_index_last_dim(zarr_arr, idxs=[0,1])
-
-    # print replay_buffer's structure
-    # print("All the keys in the replay_buffers are: ", list(replay_buffer.data.keys()))
 
     return replay_buffer
 

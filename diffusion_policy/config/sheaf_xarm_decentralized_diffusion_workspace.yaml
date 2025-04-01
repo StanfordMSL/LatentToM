@@ -1,9 +1,10 @@
+# we use the all the data, because we need to train two models at the same time
 defaults:
   - _self_
-  - task: xarm2_coffee_pouring_decentralized
+  - task: xarm_multi_coffee_bean_pouring_image
 
-name: train_diffusion_unet_image
-_target_: diffusion_policy.workspace.train_diffusion_unet_image_workspace.TrainDiffusionUnetImageWorkspace
+name: train_diffusion_sheaf_image
+_target_: diffusion_policy.workspace.train_diffusion_sheaf_image_workspace.TrainDiffusionSheafImageWorkspace
 
 task_name: ${task.name}
 shape_meta: ${task.shape_meta}
@@ -19,7 +20,7 @@ keypoint_visible_rate: 1.0
 obs_as_global_cond: True
 
 policy:
-  _target_: diffusion_policy.policy.diffusion_unet_image_policy.DiffusionUnetImagePolicy
+  _target_: diffusion_policy.policy.diffusion_sheaf_image_policy.DiffusionSheafImagePolicy
 
   shape_meta: ${shape_meta}
   
@@ -37,7 +38,7 @@ policy:
     prediction_type: epsilon # or sample
 
   obs_encoder:
-    _target_: diffusion_policy.model.vision.multi_image_obs_encoder.MultiImageObsEncoder
+    _target_: diffusion_policy.model.vision.sheaf_obs_encoder.SheafObsEncoder
     shape_meta: ${shape_meta}
     rgb_model:
       _target_: diffusion_policy.model.vision.model_getter.get_resnet
@@ -74,14 +75,14 @@ ema:
   max_value: 0.9999
 
 dataloader:
-  batch_size: 64
+  batch_size: 32
   num_workers: 8
   shuffle: True
   pin_memory: True
   persistent_workers: True
 
 val_dataloader:
-  batch_size: 64
+  batch_size: 32
   num_workers: 8
   shuffle: False
   pin_memory: True
@@ -95,7 +96,7 @@ optimizer:
   weight_decay: 1.0e-6
 
 training:
-  device: "cuda:0"
+  device: "cuda"
   seed: 42
   debug: False
   resume: True
@@ -119,6 +120,8 @@ training:
   max_val_steps: null
   # misc
   tqdm_interval_sec: 1.0
+  # sheaf loss weight
+  sheaf_loss_weight: 0.01
 
 logging:
   project: diffusion_policy_debug

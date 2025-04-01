@@ -81,10 +81,13 @@ def real_data_to_replay_buffer_decentralized(
         compressors=compressor_map
         )
 
-    # for arm 1, we only load the first 10 actions
+    # for arm 1, we only load the first 10 actions， for arm 2, we only load the last 10 actions
     if 'action' in out_replay_buffer.data.keys():
-        out_replay_buffer.data['action'] = out_replay_buffer['action'][:, :10]
-    # print what is in the replay buffer after loading lowdim data
+        # # for arm 1, we load first 10 actions
+        # out_replay_buffer.data['action'] = out_replay_buffer['action'][:, :10]
+        # # for arm 2, we only load the last 10 actions
+        out_replay_buffer.data['action'] = out_replay_buffer['action'][:, 10:20]
+    # # print what is in the replay buffer after loading lowdim data
     # print(list(out_replay_buffer.items()))
 
     # worker function

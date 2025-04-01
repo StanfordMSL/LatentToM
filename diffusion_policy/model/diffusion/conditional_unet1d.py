@@ -39,6 +39,10 @@ class ConditionalResidualBlock1D(nn.Module):
             Rearrange('batch t -> batch t 1'),
         )
 
+        # # print the init values
+        # print("cond_dim: ", cond_dim)
+        # print("cond_channels: ", cond_channels)
+
         # make sure dimensions compatible
         self.residual_conv = nn.Conv1d(in_channels, out_channels, 1) \
             if in_channels != out_channels else nn.Identity()
@@ -52,7 +56,9 @@ class ConditionalResidualBlock1D(nn.Module):
             out : [ batch_size x out_channels x horizon ]
         '''
         out = self.blocks[0](x)
+        # print("cond: ", cond.shape)
         embed = self.cond_encoder(cond)
+        # print("I can reach here!")
         if self.cond_predict_scale:
             embed = embed.reshape(
                 embed.shape[0], 2, self.out_channels, 1)
@@ -195,11 +201,16 @@ class ConditionalUnet1D(nn.Module):
 
         global_feature = self.diffusion_step_encoder(timesteps)
 
+        # print("raw: ", global_feature.shape)
+
         if global_cond is not None:
             global_feature = torch.cat([
                 global_feature, global_cond
             ], axis=-1)
-        
+
+        # print("global_feature after: ", global_feature.shape)
+        # print("global cond", global_cond.shape)
+
         # encode local features
         h_local = list()
         if local_cond is not None:

@@ -58,6 +58,9 @@ class TrainDiffusionUnetImageWorkspace(BaseWorkspace):
         self.global_step = 0
         self.epoch = 0
 
+        # are we debugging or not?
+        self.wandb_launch = True
+
     def run(self):
         cfg = copy.deepcopy(self.cfg)
 
@@ -111,16 +114,17 @@ class TrainDiffusionUnetImageWorkspace(BaseWorkspace):
         assert isinstance(env_runner, BaseImageRunner)
 
         # configure logging
-        wandb_run = wandb.init(
-            dir=str(self.output_dir),
-            config=OmegaConf.to_container(cfg, resolve=True),
-            **cfg.logging
-        )
-        wandb.config.update(
-            {
-                "output_dir": self.output_dir,
-            }
-        )
+        if self.wandb_launch:
+            wandb_run = wandb.init(
+                dir=str(self.output_dir),
+                config=OmegaConf.to_container(cfg, resolve=True),
+                **cfg.logging
+            )
+            wandb.config.update(
+                {
+                    "output_dir": self.output_dir,
+                }
+            )
 
         # configure checkpoint
         topk_manager = TopKCheckpointManager(
@@ -213,7 +217,7 @@ class TrainDiffusionUnetImageWorkspace(BaseWorkspace):
                         action: {B, T, 20}
                         }
                         """
-                        # device transfer
+                        # device transfer, move all batches to GPU
                         batch = dict_apply(batch, lambda x: x.to(device, non_blocking=True))
                         if train_sampling_batch is None:
                             train_sampling_batch = batch
@@ -247,7 +251,8 @@ class TrainDiffusionUnetImageWorkspace(BaseWorkspace):
                         is_last_batch = (batch_idx == (len(train_dataloader)-1))
                         if not is_last_batch:
                             # log of last step is combined with validation and rollout
-                            wandb_run.log(step_log, step=self.global_step)
+                            if self.wandb_launch:
+                                wandb_run.log(step_log, step=self.global_step)
                             json_logger.log(step_log)
                             self.global_step += 1
 
@@ -335,7 +340,8 @@ class TrainDiffusionUnetImageWorkspace(BaseWorkspace):
 
                 # end of epoch
                 # log of last step is combined with validation and rollout
-                wandb_run.log(step_log, step=self.global_step)
+                if self.wandb_launch:
+                    wandb_run.log(step_log, step=self.global_step)
                 json_logger.log(step_log)
                 self.global_step += 1
                 self.epoch += 1
