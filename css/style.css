@@ -1,0 +1,649 @@
+/* 顶部 Logo 栏 */
+.top-logos {
+  background: white;          /* 可根据需求改背景色 */
+  padding: 0.5rem 0;          /* 上下间距 */
+  border-bottom: 1px solid #e0e0e0; /* 可选：与 navbar 分隔线 */
+}
+.navbar .logo {
+  visibility: hidden;  /* 或者：opacity: 0; */
+}
+
+
+.top-logos .logo-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;            /* 加大间距 */
+  flex-wrap: wrap;
+}
+
+.top-logos .logo-row img {
+  height: 80px;         /* 放大 logo */
+  object-fit: contain;
+}
+
+/* 放大nus logo */
+.top-logos .logo-row img.logo2 {
+  transform: scale(1.4); /* 放大 1.2 倍 */
+  transform-origin: center center;
+}
+
+/* 缩小msl logo */
+.top-logos .logo-row img.logo3 {
+  transform: scale(0.75); /* 放大 1.2 倍 */
+  transform-origin: center center;
+}
+
+/* zoom out marmot logo */
+.top-logos .logo-row img.logo4 {
+  transform: scale(0.88); /* 放大 1.2 倍 */
+  transform-origin: center center;
+}
+
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Navbar */
+.navbar {
+    background: #8C1515;
+    padding: 1rem 0;
+}
+.navbar .logo img {
+    height: 40px;
+}
+.navbar .nav-links {
+    list-style: none;
+    display: inline-block;
+    float: right;
+}
+.navbar .nav-links li {
+    display: inline;
+    margin-left: 1.5rem;
+}
+.navbar .nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
+
+/* Dropdown 基本布局 */
+.navbar .nav-links li.dropdown {
+  position: relative;
+  /* 确保同行内显示 */
+  display: inline-block;
+}
+
+/* 隐藏子菜单 */
+.navbar .nav-links .dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;           /* 紧贴父项下方 */
+  left: 0;
+  background-color: white;
+  min-width: 200px;    /* 可根据需要调整 */
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  z-index: 1000;
+  padding: 0.5rem 0;
+}
+
+/* 子菜单项 */
+.navbar .nav-links .dropdown-content li {
+  display: block;
+}
+.navbar .nav-links .dropdown-content li a {
+  display: block;
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+  color: #333333;
+  text-decoration: none;
+}
+
+/* Hover 效果 */
+.navbar .nav-links .dropdown-content li a:hover {
+  background-color: #f2f2f2;
+}
+
+/* 鼠标移上父项时展示子菜单 */
+.navbar .nav-links li.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* 给 dropbtn 加个指针和内边距 */
+.navbar .nav-links .dropbtn {
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+}
+.navbar .nav-links .dropbtn:hover {
+  color: #ffb81c;  /* 或其他 hover 颜色 */
+}
+
+
+/* Hero */
+.hero {
+    /*background: url('../assets/hero-bg.jpg') center/cover no-repeat;*/
+    color: #666666;
+    text-align: center;
+    padding: 6rem 0;
+}
+.hero h1 {
+      font-size: 2.5rem;      /* 根据需要微调，原来太大就调小 */
+      line-height: 1.2;       /* 紧凑一点 */
+      margin-bottom: 1rem;
+}
+.hero p {
+    font-size: 1.2rem;        /* 你想要的大小 */
+    line-height: 1.6;       /* 可读性 */
+    color: #666666;         /* 如果你希望正文也用浅灰，这里可以加 */
+    text-align: justify;
+}
+.highlight {
+  color: #8C1515;         /* Stanford Cardinal Red */
+  font-weight: bold;      /* 可选，加粗更突出 */
+}
+
+.hero-text-img p .wrap-img {
+  float: left;
+  width: 390px;
+  transition: transform .2s ease-in-out;
+}
+.hero-text-img p .wrap-img:hover {
+  transform: scale(1.5);   /* 鼠标悬停时放大 20% */
+}
+
+/* 清理 float，保证外层容器撑开高度 */
+.hero-text-img::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* 段落两端对齐（保留之前设置） */
+.hero-text-img p {
+  text-align: justify;
+  text-justify: inter-word;
+  color: #666666;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+/* 手机屏幕下垂直排列 */
+@media (max-width: 768px) {
+  .hero-text-img {
+    flex-direction: column;
+    align-items: center;
+    text-align: justify;
+  }
+  .hero-text-img img {
+    margin-bottom: 1rem;
+  }
+}
+
+
+/* Sections */
+.section {
+    padding: 4rem 0;
+}
+.section h2 {
+    text-align: left;
+    font-family: Arial, sans-serif;
+    color: #666666;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+.section h3 {
+    text-align: left;
+    font-family: Arial, sans-serif;
+    color: #666666;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+}
+
+.section h4 {
+    text-align: left;
+    font-family: Arial, sans-serif;
+    color: #666666;
+    margin-bottom: 2rem;
+    font-size: 1.6rem;
+}
+
+#alt-results,
+#diffusion-model-analysis,
+#diffusion-policy-analysis,
+#details,
+#publications,
+#videos,
+#team,
+#contact {
+  font-family: Arial, sans-serif;
+  color: #666666;       /* 浅灰色 */
+}
+
+/* Publications */
+.pub-list {
+    list-style: disc inside;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Video */
+.video-section video {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+}
+
+/* Team */
+.team-grid {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+.team-member {
+    text-align: center;
+}
+.team-member img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+}
+
+/* Footer */
+footer {
+    background: #8C1515;
+    color: white;
+    text-align: center;
+    padding: 1.5rem 0;
+}
+
+
+/* Diffusion Model Analysis 下的视频网格 */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;          /* 视频之间的间距 */
+  margin: 1.5rem 0;   /* 与上下文本的间距 */
+}
+
+.video-grid video {
+  width: 100%;        /* 自动撑满格子宽度 */
+  height: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #000;   /* 避视频加载前空白 */
+}
+
+@media (max-width: 1200px) {
+  .video-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 800px) {
+  .video-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 500px) {
+  .video-grid { grid-template-columns: 1fr; }
+}
+
+/* 给所有垂直排列的图片加上过渡效果 */
+.image-stack img {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  display: block;
+  margin: 0 auto 1.5rem;
+
+  /* 下面两行是关键： */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+/* 鼠标悬停时的自动放大和阴影效果 */
+.image-stack img:hover {
+  transform: scale(1.5);               /* 放大 5% */
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+
+/* S1 部分：6x5 视频网格 */
+.s1-video-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+/*!* 视频样式：自适应宽度、自动播放循环、悬停放大 *!*/
+.s1-video-grid video {
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+  background: #000;
+}
+
+/* 悬停时放大 5% */
+.s1-video-grid video:hover {
+  transform: scale(5);
+}
+
+
+/* S2：两路视频并排 */
+.s2-video-row {
+  display: flex;
+  justify-content: center; /* 居中排列，也可以用 space-between */
+  gap: 1rem;               /* 两个视频之间的间距 */
+  margin: 1.5rem 0;        /* 与上下段落的间距 */
+}
+
+.s2-video-row video {
+  width: calc(50% - 0.5rem); /* 每个占一半宽度，减去一半 gap */
+  height: auto;
+  background: none;
+}
+
+
+/* S3：两路视频并排且静音 */
+.s3-video-row {
+  display: flex;
+  justify-content: center;  /* 居中排列 */
+  gap: 1rem;                /* 两视频间间距 */
+  margin: 1.5rem 0;         /* 与上下内容保持间距 */
+}
+
+.s3-video-row video {
+  width: calc(50% - 0.5rem);  /* 每个占一半宽度，减去一半 gap */
+  height: auto;
+  background: none;
+}
+
+/* 机构脚注 */
+.affiliations {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  font-family: Arial, sans-serif;
+  color: #888888;
+  font-size: 0.9rem;
+}
+.affiliations div {
+  display: inline-block;
+}
+.affiliations sup {
+  font-size: 0.75rem;
+}
+
+/* 给三个小节标题增加上方间距 */
+#diffusion-model-analysis {
+  margin-top: 3rem;   /* 根据需要调大或调小 */
+}
+
+#diffusion-policy-analysis {
+  margin-top: 3rem;
+}
+
+#alt-results {
+  margin-top: 3rem;
+}
+
+/* 如果你还想同时让它们前面的段落或容器也有点缓冲，可加： */
+#diffusion-model-analysis::before,
+#diffusion-policy-analysis::before,
+#alt-results::before {
+  content: "";
+  display: block;
+  height: 1rem;      /* 额外空白高度 */
+}
+
+/* 只缩小 Introduction Video 区块的上内边距 */
+#videos.section {
+  padding-top: 1rem;      /* 原来可能是 4rem，改成 1rem 或更小 */
+  /* padding-bottom 保持不变，或者你也可以单独调 */
+}
+
+/* 标题本身也去掉多余的外边距 */
+#videos h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;    /* 视需要保留一点下方间距 */
+}
+
+/* 在 ALT Results: Multimodality Behavior 标题前增加空白 */
+#alt-results {
+  margin-top: 3rem;  /* 调大或调小这个值来控制空白高度 */
+}
+
+/* 并排放置两张实验示意图 */
+.LatentToM-results .experiment-figures {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  gap: 1rem;               /* 图片之间留空 */
+  margin: 1.5rem 0;        /* 与上下文字保持距离 */
+}
+
+/* 图片基础样式 + 过渡 */
+.LatentToM-results .experiment-figures img {
+  width: 45%;              /* 各占容器宽度约 45% */
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+/* 鼠标悬停时放大 */
+.LatentToM-results .experiment-figures img:hover {
+  transform: scale(1.2);
+}
+
+/* 图片浮动，文字环绕 */
+.wrap-img {
+  float: left;                    /* 左浮动 */
+  width: 10%;                     /* 三张图并排，每张占约 30% */
+  margin: 0 1rem 1rem 0;          /* 右和下留空隙 */
+  transition: transform .3s ease; /* 悬停放大过渡 */
+  cursor: pointer;
+}
+.wrap-img:hover {
+  transform: scale(1.2);         /* 悬停时放大 */
+}
+
+/* 清除 float，让父段落撑开 */
+.LatentToM-results p::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* 段落文本两端对齐 */
+.LatentToM-results p {
+  text-align: justify;
+  text-justify: inter-word;
+  line-height: 1.6;
+  color: #666666;
+  font-family: Arial, sans-serif;
+}
+
+/* flex 等高布局 */
+.media-row {
+  display: flex;
+  gap: 1rem;
+  margin: 2rem 0;
+  align-items: stretch;   /* 关键：让左右两列等高 */
+}
+
+/* 左右两列占比改为：图片 1 份，视频 3 份 */
+.media-row .media-image {
+  flex: 1;
+}
+.media-row .media-videos {
+  flex: 1.23;
+}
+
+/* 图片高度撑满容器 */
+.media-image img {
+  width: auto;            /* 保持宽高比 */
+  height: 100%;           /* 撑满 media-image 的高度 */
+  max-width: 100%;        /* 不超出容器宽度 */
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+/* 视频保持原有宽度，高度自动 */
+.video-grid video {
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+/* 2×3 网格排布 */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+/* 悬停放大 */
+.hover-zoom:hover {
+  transform: scale(2);
+}
+
+/* Task2 视频+图片 并排容器 */
+.task2-media {
+  display: flex;
+  gap: 1rem;            /* 媒体之间的间距 */
+  margin: 1.5rem 0;     /* 与上下文字的间距 */
+}
+
+/* 让视频更大，图片更小 */
+.task2-media img {
+  flex: 1;      /* 图片占容器的 1/4 宽度 */
+}
+.task2-media video {
+  flex: 1.5;      /* 视频占容器的 3/4 宽度 */
+}
+
+/* 保留自适应高度和 hover 效果 */
+.task2-media video,
+.task2-media img {
+  width: 0;           /* 必要：和 flex:1 配合使用 */
+  height: auto;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+/* 视频背景去除空白并确保自适应 */
+.task2-media video {
+  background: none;
+}
+
+/* 悬停时放大 */
+.task2-media .hover-zoom:hover {
+  transform: scale(2);
+}
+
+/* 作者列表整个容器用 flex 居中 */
+.hero .authors {
+  display: flex;
+  justify-content: center;  /* 水平居中 */
+  margin: 0.5rem 0 0.25rem;
+}
+
+/* 段落本身不需要额外的左右 padding，行内文本自然居中 */
+.hero .authors p {
+  margin: 0;
+  text-align: center;       /* 保险起见，再次声明居中 */
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+/* 脚注数字 */
+.hero .authors sup {
+  font-size: 0.75rem;
+  vertical-align: super;
+}
+
+/* 机构脚注 */
+.hero .affiliations {
+  text-align: center;              /* 居中对齐 */
+  margin: 0 0 1rem;                /* 上 0，下 1rem */
+}
+.hero .affiliations p {
+  margin: 0;                       /* 去掉默认段落上下边距 */
+  font-size: 0.9rem;
+  line-height: 1.2;                /* 减小行高 */
+}
+
+/* 脚注标号 */
+.hero .authors sup,
+.hero .affiliations sup {
+  font-size: 0.75rem;
+  vertical-align: super;
+}
+
+/* Hero 区文本下方视频 */
+.hero-text-img .hero-demo-video {
+  width: 100%;            /* 撑满容器宽度 */
+  max-width: 800px;       /* 最大宽度，可根据需要调整 */
+  display: block;         /* 独占一行 */
+  margin: 1.5rem auto 0;  /* 顶部留 1.5rem，左右居中 */
+  border-radius: 4px;     /* 可选：圆角 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* 可选：轻微阴影 */
+}
+
+/* Model Training 段落下方的视频 */
+.model-training-video {
+  width: 100%;            /* 撑满容器宽度 */
+  max-width: 800px;       /* 可根据需要调整最大宽度 */
+  display: block;         /* 独占一行 */
+  margin: 1.5rem auto;    /* 顶部留空，下方自动居中 */
+  border-radius: 4px;     /* 可选：圆角 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* 可选：阴影 */
+}
+
+/* 段落后插入的图片 */
+.inline-image {
+  display: block;           /* 独占一行 */
+  max-width: 100%;          /* 不超出容器宽度 */
+  width: 600px;             /* 可根据需要调整一个理想宽度 */
+  height: auto;
+  margin: 1.5rem auto;      /* 顶部留 1.5rem，下方自动居中 */
+  border-radius: 4px;       /* 可选：圆角 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* 可选：轻微阴影 */
+}
+
+/* 让 LatentToM Results 标题与上方内容保持更大间距 */
+#LatentToM-results {
+  margin-top: 3rem;   /* 根据需要调整这个值 */
+}
+
+/* 缩小 Details 区块上方的内边距 */
+#details {
+  /* 原来可能是 padding-top:4rem，这里改成更小的值 */
+  padding-top: 1rem;
+}
+
+/* 彻底去掉标题本身的上外边距，并微调下外边距 */
+#details h2 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+

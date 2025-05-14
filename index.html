@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LatentToM</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script defer src="js/main.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a class="logo" href="index.html">
+                <img src="assets/logo.png" alt="Logo" />
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+<!--                <li><a href="#details">Details</a></li>-->
+                <li class="dropdown">
+                <a href="#details" class="dropbtn">Details</a>
+                <ul class="dropdown-content">
+                  <li><a href="#model-training">Model Training</a></li>
+                  <li><a href="#model-inference">Model Inference</a></li>
+                  <li><a href="#LatentToM-results">LatentToM Results</a></li>
+                </ul>
+                </li>
+                <li><a href="#videos">Video</a></li>
+                <li><a href="#publications">Paper</a></li>
+                <li><a href="about.html">Team</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Top Logos -->
+    <div class="top-logos">
+        <div class="container logo-row">
+          <img src="assets/stanford_logo.png" alt="stanford">
+          <img src="assets/nus_logo.png" alt="nus" class="logo2">
+          <img src="assets/marmot_logo.png" alt="marmot" class="logo4">
+          <img src="assets/msl_logo.png" alt="msl" class="logo3">
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container">
+            <h1>
+                <span class="highlight">Latent</span> <span class="highlight">T</span>heory <span class="highlight">o</span>f <span class="highlight">M</span>ind: A Decentralized Diffusion Architecture for Cooperative Manipulation
+            </h1>
+            <!-- 新增作者列表 -->
+            <div class="authors">
+              <p>
+                Chengyang He<sup>1,2</sup>,
+                Gadiel Sznaier Camps<sup>2</sup>,
+                Xu Liu<sup>2</sup>,
+                Mac Schwager<sup>2</sup>,
+                Guillaume Sartoretti<sup>1</sup>
+              </p>
+            </div>
+            <div class="affiliations">
+              <p><sup>1</sup>University of Singapore</p>
+              <p><sup>2</sup>Stanford University</p>
+            </div>
+            <div class="hero-text-img">
+                <p> <img src="assets/overview.png" alt="Illustration" class="wrap-img">
+                    We present Latent Theory of Mind (LatentToM), a decentralized diffusion policy architecture for
+                    collaborative robot manipulation.
+                    Our policy allows multiple manipulators with their own perception and computation to collaborate
+                    with each other towards a common task goal with or without explicit communication.
+                    Our key innovation lies in allowing each agent to maintain two latent representations: an <span class="highlight">ego</span>
+                    embedding specific to the robot, and a <span class="highlight">consensus</span> embedding trained to be common to both robots,
+                    despite their different sensor streams and poses.
+                    We further let each robot train a decoder to infer the other robot's ego embedding from their
+                    consensus embedding, akin to ``theory of mind'' in latent space.
+                    Training occurs centrally, with all the policies' consensus encoders supervised by a loss inspired
+                    by sheaf theory, a mathematical theory for clustering data on a topological manifold.
+                    Specifically, we introduce a first-order cohomology loss to enforce sheaf-consistent alignment of the consensus embeddings.
+                    To preserve the expressiveness of the consensus embedding, we further propose structural constraints
+                    based on theory of mind and a directional consensus mechanism.
+                    Execution can be fully distributed, requiring no explicit communication between policies.
+                    In which case, the information is exchanged implicitly through each robot's sensor stream by
+                    observing the actions of the other robots and their effects on the scene.
+                    Alternatively, execution can leverage direct communication to share the robots' consensus embeddings,
+                    where the embeddings are shared once during each inference step and are aligned using the sheaf Laplacian.
+                    While we tested our method using two manipulators, our approach can naturally be extended to an arbitrary number of agents.
+                    In our hardware experiments, LatentToM outperforms a naive decentralized diffusion baseline,
+                    and shows comparable performance with a state-of-the-art centralized diffusion policy for bi-manual manipulation.
+                    Additionally, we show that LatentToM is naturally robust to temporary robot failure or delays, while a centralized policy may fail.
+                </p>
+                <!-- 新增：自动静音循环播放视频 -->
+                <video class="hero-demo-video" autoplay loop muted playsinline>
+                  <source src="assets/scale.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </header>
+
+    <!-- Details Section -->
+    <section id="details" class="section">
+      <div class="container">
+        <h2>Details</h2>
+        <p>
+            In this section, we present the details of our approach (LatentToM) during both the training and inference stages,
+            along with the experimental results.
+        </p>
+        <h3 id="model-training">Model Training</h3>
+        <p>
+            In this part, we describe the design of the loss function in the training phase to achieve consensus
+            embedding learning based on sheaf theory, incorporating the Theory of Mind (ToM)-inspired constraint
+            and the directional consensus mechanism.
+        </p>
+        <!-- 新增：Model Training 视频 -->
+        <video class="model-training-video" autoplay loop muted playsinline>
+          <source src="assets/training/model_training.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+
+        <h3 id="model-inference">Model Inference</h3>
+        <p>
+            To mitigate such decision-making deviations caused by local inconsistencies, we introduce the sheaf Laplacian as an online adjustment mechanism during inference.
+            This method provides a lightweight, model-agnostic “consensus repair” process that does not require modifying the trained model.
+            By iteratively updating the consensus embeddings of the two nodes, the sheaf Laplacian gradually brings them closer together, promoting consistency and behavioral stability.
+            Specifically, we use a classic bidirectional consistency synchronization operator:
+        </p>
+        <!-- 新增：示意图 -->
+        <img src="assets/inference/model_inference.png" alt="Sheaf Laplacian Diagram" class="inline-image">
+        <p>
+            It is worth noting that one-step information exchange (communication) between the two nodes is required per inference.
+        </p>
+
+        <h3 id="LatentToM-results">LatentToM Results</h3>
+        <p>
+            Two experiments were conducted in this section, with the experimental design and results detailed below.
+        </p>
+        <div class="LatentToM-results">
+          <h4>Experiment Setup</h4>
+            <!-- 新增：并排图片 -->
+          <div class="experiment-figures">
+            <img src="assets/tasks/task1.png" alt="Push-T Illustration">
+            <img src="assets/tasks/task2.png" alt="Pouring Coffee Illustration">
+          </div>
+          <p>
+              We designed two experiments to evaluate the performance of our LatentToM.
+              Task 1: Push-T.
+              Unlike the traditional Push-T task, which only requires pushing the T-shaped block to a target location,
+              our version imposes an additional constraint: the block is expected to maintain its initial orientation
+              throughout the movement.
+              This demands precise coordination between the two arms to apply force symmetrically and prevent rotation,
+              which is illustrated by the left figure.
+              Task 2: Pouring coffee beans.
+              In this task, the two arms start from fixed positions, collaboratively pour coffee beans from a cup into
+              a small pot, and then return to a safe resting position.
+              Since the task does not have a fixed target pose for the arms, success depends on the arms correctly
+              interpreting each other’s intentions in real time.
+              A misalignment in timing or trajectory can result in spillage, making the task a clear example of action
+              interdependence and requiring tightly coupled coordination. As shown in the right figure.
+          </p>
+          <h4>Task 1: Pushing T.</h4>
+            <p>
+                <img src="assets/task1_results/top.png" class="wrap-img" alt="Top InD example">
+                <img src="assets/task1_results/btmInD.png" class="wrap-img" alt="Bottom OOD example">
+                <img src="assets/task1_results/btmOOD.png" class="wrap-img" alt="Results">
+                In Task 1, we explored each method's ability to collaborate when confronted with a T-block that is
+                visually in distribution (InD) (as shown in Top) but has out-of-distribution (OOD) asymmetric dynamics
+                (as shown in Bottom OOD). More specifically,
+                the underside of the block was modified so that each side would have distinct coefficients of friction,
+                thereby exacerbating any error due to poor coordination. The results are shown below.
+            </p>
+            <!-- Image + 6 视频 并排区域 -->
+            <div class="media-row">
+              <!-- 左侧大图，占 50% -->
+              <div class="media-image">
+                <img src="assets/task1_results/result_task1.png" alt="Illustration" class="hover-zoom">
+              </div>
+              <!-- 右侧视频网格，占 50% -->
+              <div class="media-videos">
+                <div class="video-grid">
+                  <video class="hover-zoom" autoplay loop muted playsinline>
+                    <source src="assets/task1_results/CDP.mp4" type="video/mp4">
+                  </video>
+                  <video class="hover-zoom" autoplay loop muted playsinline>
+                    <source src="assets/task1_results/NDDP.mp4" type="video/mp4">
+                  </video>
+                  <video class="hover-zoom" autoplay loop muted playsinline>
+                    <source src="assets/task1_results/NCDDP.mp4" type="video/mp4">
+                  </video>
+                  <video class="hover-zoom" autoplay loop muted playsinline>
+                    <source src="assets/task1_results/TOM1.mp4" type="video/mp4">
+                  </video>
+                  <video class="hover-zoom" autoplay loop muted playsinline>
+                    <source src="assets/task1_results/TOM2.mp4" type="video/mp4">
+                  </video>
+                  <video class="hover-zoom" autoplay loop muted playsinline>
+                    <source src="assets/task1_results/TOM3.mp4" type="video/mp4">
+                  </video>
+                </div>
+              </div>
+            </div>
+          <h4>Task 2: Coffee Bean Pouring</h4>
+            <p>
+                Representative rollout results for Task 2 (coffee bean pouring). As shown in the figure, although both
+                NNDP and NCDDP resulted in failures, NNDP clearly spilled more coffee beans than NCDDP (red area vs. blue area).
+                For our method, Latent w/o SL exhibits an issue where, after completing the task, the arm may holding the cup
+                fails to return to the resting position and remains in a risky posture, potentially causing additional spillage
+                (highlighted in the yellow area). In contrast, DDP w/ SL successfully returns to a safe resting position,
+                as indicated by the green area. However, for the same fully successful (FS) cases, CDP often completes the task more quickly.
+            </p>
+            <!-- 新增：并排视频+图片 -->
+            <div class="task2-media">
+            <img src="assets/task2_results/result_task2.png" alt="Coffee Bean Illustration" class="hover-zoom">
+              <video class="hover-zoom" autoplay loop muted playsinline>
+                <source src="assets/task2_results/task2.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Full Videos -->
+    <section id="videos" class="section video-section">
+        <div class="container">
+            <h2>Introduction Video</h2>
+            <video controls loop muted>
+                <source src="assets/LatentToM.mp4" type="video/mp4">
+                Your browser does not support HTML5 video.
+            </video>
+        </div>
+    </section>
+
+    <!-- Publications -->
+    <section id="publications" class="section">
+        <div class="container">
+            <h2>Bibtex</h2>
+            <p>
+                Coming soon!<br>
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section">
+        <div class="container">
+            <h2>Contact</h2>
+            <p>If you have any questions, feel free to contact <a href="mailto:hecy@stanford.edu">Chengyang He</a>, <a href="mailto:gsznaier@stanford.edu">Gadiel Sznaier Camps</a>, and <a href="mailto:xuliu@stanford.edu">Xu Liu</a>.</p>
+        </div>
+    </section>
+
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Latent Theory of Mind: A Decentralized Diffusion Architecture for Cooperative Manipulation</p>
+        </div>
+    </footer>
+</body>
+</html>
+
