@@ -646,4 +646,21 @@ footer {
   margin-bottom: 0.75rem;
 }
 
+.bibtex {
+  background-color: #f5f5f5;      /* 浅灰底 */
+  padding: 1rem;                  /* 内边距 */
+  border-radius: 6px;             /* 圆角 */
+  overflow-x: auto;               /* 内容过宽时横向滚动 */
+  font-family: 'Courier New', monospace;  /* 等宽字体 */
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #555;                    /* 深一点的灰色字体 */
+  margin: 1.5rem 0;               /* 与上下文留白 */
+}
+
+.bibtex code {
+  white-space: pre;               /* 保留所有空格和换行 */
+  display: block;
+}
+
 
