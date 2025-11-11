@@ -10,19 +10,19 @@ from diffusion_policy.common.pytorch_util import dict_apply, replace_submodules
 
 class SheafObsEncoder(ModuleAttrMixin):
     def __init__(self,
-            shape_meta: dict,
-            rgb_model: Union[nn.Module, Dict[str,nn.Module]],
-            resize_shape: Union[Tuple[int,int], Dict[str,tuple], None]=None,
-            crop_shape: Union[Tuple[int,int], Dict[str,tuple], None]=None,
-            random_crop: bool=True,
-            # replace BatchNorm with GroupNorm
-            use_group_norm: bool=False,
-            # use single rgb model for all rgb inputs
-            share_rgb_model: bool=False,
-            # renormalize rgb input with imagenet normalization
-            # assuming input in [0,1]
-            imagenet_norm: bool=False
-        ):
+                 shape_meta: dict,
+                 rgb_model: Union[nn.Module, Dict[str, nn.Module]],
+                 resize_shape: Union[Tuple[int, int], Dict[str, tuple], None] = None,
+                 crop_shape: Union[Tuple[int, int], Dict[str, tuple], None] = None,
+                 random_crop: bool = True,
+                 # replace BatchNorm with GroupNorm
+                 use_group_norm: bool = False,
+                 # use single rgb model for all rgb inputs
+                 share_rgb_model: bool = False,
+                 # renormalize rgb input with imagenet normalization
+                 # assuming input in [0,1]
+                 imagenet_norm: bool = False
+                 ):
         """
         Assumes rgb input: B,C,H,W
         Assumes low_dim input: B,D
@@ -57,18 +57,18 @@ class SheafObsEncoder(ModuleAttrMixin):
                         assert isinstance(rgb_model, nn.Module)
                         # have a copy of the rgb model
                         this_model = copy.deepcopy(rgb_model)
-                
+
                 if this_model is not None:
                     if use_group_norm:
                         this_model = replace_submodules(
                             root_module=this_model,
                             predicate=lambda x: isinstance(x, nn.BatchNorm2d),
                             func=lambda x: nn.GroupNorm(
-                                num_groups=x.num_features//16, 
+                                num_groups=x.num_features // 16,
                                 num_channels=x.num_features)
                         )
                     key_model_map[key] = this_model
-                
+
                 # configure resize
                 input_shape = shape
                 this_resizer = nn.Identity()
@@ -78,9 +78,9 @@ class SheafObsEncoder(ModuleAttrMixin):
                     else:
                         h, w = resize_shape
                     this_resizer = torchvision.transforms.Resize(
-                        size=(h,w)
+                        size=(h, w)
                     )
-                    input_shape = (shape[0],h,w)
+                    input_shape = (shape[0], h, w)
 
                 # configure randomizer
                 this_randomizer = nn.Identity()
@@ -99,14 +99,14 @@ class SheafObsEncoder(ModuleAttrMixin):
                         )
                     else:
                         this_normalizer = torchvision.transforms.CenterCrop(
-                            size=(h,w)
+                            size=(h, w)
                         )
                 # configure normalizer
                 this_normalizer = nn.Identity()
                 if imagenet_norm:
                     this_normalizer = torchvision.transforms.Normalize(
                         mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-                
+
                 this_transform = nn.Sequential(this_resizer, this_randomizer, this_normalizer)
                 key_transform_map[key] = this_transform
             elif type == 'low_dim':
@@ -117,6 +117,31 @@ class SheafObsEncoder(ModuleAttrMixin):
         low_dim_keys = sorted(low_dim_keys)
 
         self.shape_meta = shape_meta
+
+        # if you want to use the default LatentToM setting, use the following shape_meta_arm1 and shape_meta_arm2
+        self.shape_meta_arm1 = {'obs': {'camera_1': {'shape': [3, 240, 320], 'type': 'rgb'},
+                                        'camera_3': {'shape': [3, 240, 320], 'type': 'rgb'},
+                                        'arm1_robot_eef_pos': {'shape': [3], 'type': 'low_dim'},
+                                        'arm1_eef_quat': {'shape': [4], 'type': 'low_dim'}},
+                                        'action': {'shape': [10]}}
+        self.shape_meta_arm2 = {'obs': {'camera_3': {'shape': [3, 240, 320], 'type': 'rgb'},
+                                        'camera_4': {'shape': [3, 240, 320], 'type': 'rgb'},
+                                        'arm2_robot_eef_pos': {'shape': [3], 'type': 'low_dim'},
+                                        'arm2_eef_quat': {'shape': [4], 'type': 'low_dim'}},
+                                        'action': {'shape': [10]}}
+
+        # # if you using the individual camera setting, use this part otherwise use the above part
+        # self.shape_meta_arm1 = {'obs': {'camera_1': {'shape': [3, 240, 320], 'type': 'rgb'},
+        #                                 'camera_2': {'shape': [3, 240, 320], 'type': 'rgb'},
+        #                                 'arm1_robot_eef_pos': {'shape': [3], 'type': 'low_dim'},
+        #                                 'arm1_eef_quat': {'shape': [4], 'type': 'low_dim'}},
+        #                                 'action': {'shape': [10]}}
+        # self.shape_meta_arm2 = {'obs': {'camera_3': {'shape': [3, 240, 320], 'type': 'rgb'},
+        #                                 'camera_4': {'shape': [3, 240, 320], 'type': 'rgb'},
+        #                                 'arm2_robot_eef_pos': {'shape': [3], 'type': 'low_dim'},
+        #                                 'arm2_eef_quat': {'shape': [4], 'type': 'low_dim'}},
+        #                                 'action': {'shape': [10]}}
+        
         self.key_model_map = key_model_map
         self.key_transform_map = key_transform_map
         self.share_rgb_model = share_rgb_model
@@ -124,23 +149,17 @@ class SheafObsEncoder(ModuleAttrMixin):
         self.low_dim_keys = low_dim_keys
         self.key_shape_map = key_shape_map
 
-        self.restriction_mapping = nn.Linear(1031, 512)
-
     def forward(self, obs_dict):
-        # # print obs_dict structure
-        # for key, value in obs_dict.items():
-        #     try:
-        #         print(f"obs_dict Key: {key}, Shape: {value.shape}")
-        #     except AttributeError:
-        #         print(f"obs_dict Key: {key}, Type: {type(value)} (No shape attribute)")
         batch_size = None
         features = list()
         # process rgb input
         if self.share_rgb_model:
-            # todo: because our current setting set self.share_rgb_model as FALSE, we do not change this part
+            # we won't use this part
             # pass all rgb obs to rgb model
             imgs = list()
             for key in self.rgb_keys:
+                if key not in obs_dict.keys():
+                    continue
                 img = obs_dict[key]
                 if batch_size is None:
                     batch_size = img.shape[0]
@@ -154,11 +173,11 @@ class SheafObsEncoder(ModuleAttrMixin):
             # (N*B,D)
             feature = self.key_model_map['rgb'](imgs)
             # (N,B,D)
-            feature = feature.reshape(-1,batch_size,*feature.shape[1:])
+            feature = feature.reshape(-1, batch_size, *feature.shape[1:])
             # (B,N,D)
-            feature = torch.moveaxis(feature,0,1)
+            feature = torch.moveaxis(feature, 0, 1)
             # (B,N*D)
-            feature = feature.reshape(batch_size,-1)
+            feature = feature.reshape(batch_size, -1)
             features.append(feature)
         else:
             # run each rgb obs to independent models
@@ -170,48 +189,52 @@ class SheafObsEncoder(ModuleAttrMixin):
                     batch_size = img.shape[0]
                 else:
                     assert batch_size == img.shape[0]
-                # print("img.shape[1:]: ", img.shape[1:])
-                # print("self.key_shape_map[key]: ", self.key_shape_map[key])
                 assert img.shape[1:] == self.key_shape_map[key]
                 img = self.key_transform_map[key](img)
                 feature = self.key_model_map[key](img)
                 features.append(feature)
-        
+
         # process lowdim input
         for key in self.low_dim_keys:
             if key not in obs_dict.keys():
                 continue
             data = obs_dict[key]
-            # print("low dim data shape:", data.shape )
             if batch_size is None:
                 batch_size = data.shape[0]
             else:
                 assert batch_size == data.shape[0]
-            # print("data.shape[1:]: ", data.shape[1:])
-            # print("self.key_shape_map[key]: ", self.key_shape_map[key])
             assert data.shape[1:] == self.key_shape_map[key]
             features.append(data)
-        
+
         # concatenate all features
-        result = torch.cat(features, dim=-1)
-        # print("The following embedding should be 1031")
-        # print("encoder result shape: ", result.shape)
-        # add a layer compress the result's late dim
-        shared_embedding = self.restriction_mapping(result)
-        return result, shared_embedding
-    
+        # structural separation - shared embedding is from camera_3, private embedding is from camera_1+p and camera_4+p
+        if 'camera_1' in obs_dict.keys():
+            result = torch.cat((features[0], features[2], features[3]), dim=-1)
+            sheaf_embedding = features[1]
+        elif 'camera_4' in obs_dict.keys():
+            result = torch.cat((features[1], features[2], features[3]), dim=-1)
+            sheaf_embedding = features[0]
+        else:
+            result = None
+            sheaf_embedding = None
+            AssertionError ("No camera_1 or camera_4 in obs_dict.keys()")
+
+        return result, sheaf_embedding
+
     @torch.no_grad()
     def output_shape(self):
         example_obs_dict = dict()
-        obs_shape_meta = self.shape_meta['obs']
+        obs_shape_meta = self.shape_meta_arm1['obs']
         batch_size = 1
         for key, attr in obs_shape_meta.items():
             shape = tuple(attr['shape'])
             this_obs = torch.zeros(
-                (batch_size,) + shape, 
+                (batch_size,) + shape,
                 dtype=self.dtype,
                 device=self.device)
             example_obs_dict[key] = this_obs
-        example_output = self.forward(example_obs_dict)
+        example_output, example_sheaf = self.forward(example_obs_dict)
         output_shape = example_output.shape[1:]
-        return output_shape
+        sheaf_shape = example_sheaf.shape[1:]
+        return output_shape, sheaf_shape
+

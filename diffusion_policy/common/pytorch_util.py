@@ -1,4 +1,4 @@
-from typing import Dict, Callable, List
+from typing import Dict, Callable, List, Any
 import collections
 import torch
 import torch.nn as nn
@@ -14,6 +14,41 @@ def dict_apply(
         else:
             result[key] = func(value)
     return result
+
+
+def build_arm_sub_batch(batch: Dict[str, Any], arm_id: int) -> Dict[str, Any]:
+    assert arm_id in [1, 2], "Only arm_id 1 or 2 is supported."
+
+    obs_keys = [
+        f'camera_1' if arm_id == 1 else f'camera_3',
+        f'camera_3' if arm_id == 1 else f'camera_4',
+        f'arm{arm_id}_robot_eef_pos',
+        f'arm{arm_id}_eef_quat'
+    ]
+
+    sub_batch = {
+        'obs': {k: v for k, v in batch['obs'].items() if k in obs_keys},
+        'action': batch[f'arm{arm_id}_action']
+    }
+
+    return sub_batch
+
+def build_arm_sub_batch_individual_cam(batch: Dict[str, Any], arm_id: int) -> Dict[str, Any]:
+    assert arm_id in [1, 2], "Only arm_id 1 or 2 is supported."
+
+    obs_keys = [
+        f'camera_1' if arm_id == 1 else f'camera_3',
+        f'camera_2' if arm_id == 1 else f'camera_4',
+        f'arm{arm_id}_robot_eef_pos',
+        f'arm{arm_id}_eef_quat'
+    ]
+
+    sub_batch = {
+        'obs': {k: v for k, v in batch['obs'].items() if k in obs_keys},
+        'action': batch[f'arm{arm_id}_action']
+    }
+
+    return sub_batch
 
 def pad_remaining_dims(x, target):
     assert x.shape == target.shape[:len(x.shape)]
