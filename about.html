@@ -1,68 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Meet the Stanford and National University of Singapore research team behind LatentToM, a CoRL 2025 oral paper.">
+  <meta name="theme-color" content="#8c1515">
+  <title>Team — LatentToM</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script defer src="js/main.js"></script>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <a class="logo" href="index.html">
-                <img src="assets/logo.png" alt="Logo" />
-            </a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">Team</a></li>
-            </ul>
-        </div>
-    </nav>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <nav class="navbar" aria-label="Primary navigation">
+    <div class="container nav-inner">
+      <a class="wordmark" href="index.html" aria-label="LatentToM home">
+        <span class="wordmark-mark" aria-hidden="true">LT</span>
+        <span>LatentToM</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
+        <span class="sr-only">Toggle navigation</span>
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html#overview">Overview</a></li>
+        <li><a href="index.html#method">Method</a></li>
+        <li><a href="index.html#results">Results</a></li>
+        <li><a href="index.html#video">Video</a></li>
+        <li><a href="index.html#paper">Paper</a></li>
+        <li><a class="active" href="about.html" aria-current="page">Team</a></li>
+      </ul>
+    </div>
+  </nav>
 
-    <section class="section">
-        <div class="container">
-            <h2>Our Team</h2>
-            <div class="team-grid">
-                <!-- 成员 1 -->
-              <div class="team-member">
-                <img src="assets/team/chengyang.jpeg" alt="Chengyang He">
-                <a href="#" class="name">Chengyang He<sup>1,2</sup></a>
-              </div>
-              <!-- 成员 3 -->
-              <div class="team-member">
-                <img src="assets/team/gadi.jpeg" alt="Gadiel Sznaier Camps">
-                <a href="#" class="name">Gadiel Sznaier Camps<sup>2</sup></a>
-              </div>
-             <!-- 成员 2 -->
-              <div class="team-member">
-                <img src="assets/team/xu.jpg" alt="Xu Liu">
-                <a href="#" class="name">Xu Liu<sup>2</sup></a>
-              </div>
-              <!-- 成员 5 -->
-              <div class="team-member">
-                <img src="assets/team/mac.jpg" alt="Mac Schwager">
-                <a href="#" class="name">Mac Schwager<sup>2</sup></a>
-              </div>
-              <!-- 成员 4 -->
-              <div class="team-member">
-                <img src="assets/team/gui.jpeg" alt="Guillaume Sartoretti">
-                <a href="#" class="name">Guillaume Sartoretti<sup>1</sup></a>
-              </div>
-            </div>
+  <main id="main-content">
+    <header class="team-hero">
+      <div class="container">
+        <div class="venue-badge"><span>CoRL 2025</span> Oral Presentation</div>
+        <p class="eyebrow">The people behind the work</p>
+        <h1>Built across two research communities.</h1>
+        <p>LatentToM brings together researchers in multi-robot systems, robot learning, and decentralized decision-making from Stanford MSL and NUS MARMoT.</p>
+      </div>
+    </header>
+
+    <section class="section team-section">
+      <div class="container">
+        <div class="team-grid">
+          <article class="team-member">
+            <img src="assets/team/chengyang.jpeg" alt="Portrait of Chengyang He">
+            <div class="team-member-copy"><h2>Chengyang He<sup>1,2</sup></h2><p>National University of Singapore × Stanford University</p></div>
+          </article>
+          <article class="team-member">
+            <img src="assets/team/gadi.jpeg" alt="Portrait of Gadiel Sznaier Camps">
+            <div class="team-member-copy"><h2>Gadiel Sznaier Camps<sup>2</sup></h2><p>Stanford University</p></div>
+          </article>
+          <article class="team-member">
+            <img src="assets/team/xu.jpg" alt="Portrait of Xu Liu">
+            <div class="team-member-copy"><h2>Xu Liu<sup>2</sup></h2><p>Stanford University</p></div>
+          </article>
+          <article class="team-member">
+            <img src="assets/team/mac.jpg" alt="Portrait of Mac Schwager">
+            <div class="team-member-copy"><h2>Mac Schwager<sup>2</sup></h2><p>Stanford University</p></div>
+          </article>
+          <article class="team-member">
+            <img src="assets/team/gui.jpeg" alt="Portrait of Guillaume Sartoretti">
+            <div class="team-member-copy"><h2>Guillaume Sartoretti<sup>1</sup></h2><p>National University of Singapore</p></div>
+          </article>
         </div>
+
+        <div class="team-affiliations">
+          <div class="team-affiliation"><span>1</span><p>National University of Singapore</p></div>
+          <div class="team-affiliation"><span>2</span><p>Stanford University</p></div>
+        </div>
+      </div>
     </section>
 
-    <!-- 机构脚注 -->
-    <div class="affiliations">
-      <div><sup>1</sup>National University of Singapore</div>
-      <div><sup>2</sup>Stanford University</div>
-    </div>
+    <section class="contact-strip">
+      <div class="container contact-inner">
+        <div><p class="section-kicker">Questions or collaboration?</p><h2>Let’s talk about cooperative robots.</h2></div>
+        <a class="button button-light" href="mailto:hecy@stanford.edu">Contact the team <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+  </main>
 
-    <footer>
-        <div class="container">
-            <p>© 2025 Latent Theory of Mind: A Decentralized Diffusion Architecture for Cooperative Manipulation</p>
-        </div>
-    </footer>
+  <footer>
+    <div class="container footer-inner">
+      <a class="wordmark footer-wordmark" href="index.html"><span class="wordmark-mark" aria-hidden="true">LT</span><span>LatentToM</span></a>
+      <p>CoRL 2025 Oral · Stanford MSL × NUS MARMoT</p>
+      <p>© 2025 LatentToM</p>
+    </div>
+  </footer>
 </body>
 </html>
-
